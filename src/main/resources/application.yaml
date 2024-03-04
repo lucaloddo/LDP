@@ -1,0 +1,52 @@
+userstack:
+  url: "http://api.userstack.com/api"
+  key: 39bfbcf57bcab719a99cb4089978748a
+nist:
+  url: "https://services.nvd.nist.gov"
+ninja:
+  url: "https://api.api-ninjas.com/v1/"
+  key: 2dSDIEYX0qzgg+/y7l+hqg==3PGtk1VYwC1vEOMO
+rapidApi:
+  url: "https://scout.p.rapidapi.com/v1/numbers"
+  key: 194c592b42msh21e4cde5898d8eep1145dajsnc69569572738
+  #key: aca2b5ed52msh287bd75f11cd379p1f1c6fjsn4e3e2ebe5586
+  #key: 772996595dmsh843220430f58206p12ff04jsn486ee48dc5ee
+  host: "scout.p.rapidapi.com"
+rapidPasswordClient:
+  url: "https://random-password-generator4.p.rapidapi.com"
+  key: aca2b5ed52msh287bd75f11cd379p1f1c6fjsn4e3e2ebe5586
+  host: "random-password-generator4.p.rapidapi.com"
+  type: "application/json"
+
+rapidHashClient:
+  url: "https://hashing-api.p.rapidapi.com/api/sha/256"
+  #key: aca2b5ed52msh287bd75f11cd379p1f1c6fjsn4e3e2ebe5586
+  #key: 194c592b42msh21e4cde5898d8eep1145dajsnc69569572738
+  key: 772996595dmsh843220430f58206p12ff04jsn486ee48dc5ee
+  host: "hashing-api.p.rapidapi.com"
+rapidWhoisClient:
+  url: "https://zozor54-whois-lookup-v1.p.rapidapi.com"
+  key: 772996595dmsh843220430f58206p12ff04jsn486ee48dc5ee
+  host: "zozor54-whois-lookup-v1.p.rapidapi.com"
+virusTotal:
+  url: "https://www.virustotal.com/api/v3"
+  key: bb8ea3bccef6d0a75ab37c24b15d2da0d70d0260e348165acb0bac56da2cf1fb
+
+selenium:
+  # change chromedriver property based on the os you are using
+  chromedriver: "windows.exe"
+  #chromedriver: "mac"
+  url: http://localhost:8080/
+  passwordPage: "password"
+  phonePage: "phone"
+  urlPage: "url"
+  domainPage: "domain"
+  filePage: "file"
+
+mock:
+  file: false
+  detect: false
+  phone: false
+  url: false
+  domain: false
+  pwd: false

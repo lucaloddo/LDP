@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>ED - Whois Domain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}"/>
+</head>
+<body style="background-color: #FFFF;">
+<div th:insert="navbar :: navbar"></div>
+<div class="container vh-100">
+
+    <div class="row" style="padding-top: 5%;">
+        <div class="col-md-12 mx-auto">
+            <h3 class="display-2 fw-italic text-center text-primary">INFORMAZIONI SUL DOMINIO RICHIESTO</h3>
+        </div>
+    </div>
+
+    <div th:if="${domainInformation.getName() == null or domainInformation.getName().isEmpty()}">
+        <div class="row" style="padding-top: 5%;">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Dominio non trovato</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:unless="${domainInformation.getName() == null or domainInformation.getName().isEmpty()}">
+        <div class="row" style="padding-top: 5%;">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><span th:text="${domainInformation.getName()}"></span></h5>
+                        <p class="card-text" id="serverName" th:value="${domainInformation.getServer()}"><strong>Server: </strong><span
+                                th:text="${domainInformation.getServer()}"></span></p>
+                        <p class="card-text" id="registrarName" th:value="${domainInformation.getRegistrar().getName()}"><strong>Registrar: </strong><span
+                                th:text="${domainInformation.getRegistrar().getName()}"></span></p>
+                        <p class="card-text" id="created" th:value="${domainInformation.getCreated()}"><strong>Creato il: </strong><span
+                                th:text="${domainInformation.getCreated()}"></span></p>
+                        <p class="card-text"><strong>Scade il: </strong><span
+                                th:text="${domainInformation.getExpires()}"></span></p>
+                        <p class="card-text"><strong>Indirizzo IP: </strong><span
+                                th:text="${domainInformation.getIps()}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5%;">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Name Servers</h5>
+                        <ul class="list-group" th:each="nameServer: ${domainInformation.getNameserver()}">
+                            <li class="list-group-item"><span th:text="${nameServer}"></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- owner list -->
+        <div class="row" style="padding-top: 5%">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Owners</h5>
+                        <div class="accordion" id="accordionContainerOwners">
+                            <div class="accordion-item" th:each="owner: ${domainInformation.getContacts().getOwner()}">
+                                <div th:if="${ownerStat.index == 0}">
+                                    <h2 class="accordion-header" th:attr="id='ownerHeading'+${ownerStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="true"
+                                                th:attr="data-bs-target='#ownerCollapse'+${ownerStat.index}, aria-controls='ownerCollapse'+${ownerStat.index}">
+                                            Owner #<span th:text="${ownerStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='ownerCollapse'+${ownerStat.index}, aria-labelledby='ownerHeading'+${ownerStat.index}"
+                                         class="accordion-collapse collapse show"
+                                         data-bs-parent="#accordionContainerOwners">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      th:text="${owner.getName()}"></span>
+                                                <span th:unless="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+
+                                                <span th:if="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      th:text="${owner.getOrganization()}"></span>
+                                                <span th:unless="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+                                                <span th:if="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      th:text="${owner.getAddress()}"></span>
+                                                <span th:unless="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+                                                <span th:if="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      th:text="${owner.getCity()}"></span>
+                                                <span th:unless="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Numero telefono: </strong>
+                                                <span th:if="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      th:text="${owner.getPhone()}"></span>
+                                                <span th:unless="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+                                                <span th:if="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      th:text="${owner.getEmail()}"></span>
+                                                <span th:unless="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${ownerStat.index != 0}">
+                                    <h2 class="accordion-header" th:attr="id='ownerHeading'+${ownerStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="false"
+                                                th:attr="data-bs-target='#ownerCollapse'+${ownerStat.index}, aria-controls='ownerCollapse'+${ownerStat.index}">
+                                            Owner #<span th:text="${ownerStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='ownerCollapse'+${ownerStat.index}, aria-labelledby='ownerHeading'+${ownerStat.index}"
+                                         class="accordion-collapse collapse" data-bs-parent="#accordionContainerOwners">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      th:text="${owner.getName()}"></span>
+                                                <span th:unless="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+                                                <span th:if="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      th:text="${owner.getOrganization()}"></span>
+                                                <span th:unless="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+                                                <span th:if="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      th:text="${owner.getAddress()}"></span>
+                                                <span th:unless="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+                                                <span th:if="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      th:text="${owner.getCity()}"></span>
+                                                <span th:unless="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Numero telefono: </strong>
+                                                <span th:if="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      th:text="${owner.getPhone()}"></span>
+                                                <span th:unless="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+                                                <span th:if="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      th:text="${owner.getEmail()}"></span>
+                                                <span th:unless="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- admin list -->
+        <div class="row" style="padding-top: 5%">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Admins</h5>
+                        <div class="accordion" id="accordionContainerAdmins">
+                            <div class="accordion-item" th:each="admin: ${domainInformation.getContacts().getAdmin()}">
+                                <div th:if="${adminStat.index == 0}">
+                                    <h2 class="accordion-header" th:attr="id='adminHeading'+${adminStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="true"
+                                                th:attr="data-bs-target='#adminCollapse'+${adminStat.index}, aria-controls='adminCollapse'+${adminStat.index}">
+                                            Admin #<span th:text="${adminStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='adminCollapse'+${adminStat.index}, aria-labelledby='adminHeading'+${adminStat.index}"
+                                         class="accordion-collapse collapse show"
+                                         data-bs-parent="#accordionContainerAdmins">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${admin.getName() != null} and ${!admin.getName().isEmpty()}"
+                                                      th:text="${admin.getName()}"></span>
+                                                <span th:unless="${admin.getName() != null} and ${!admin.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+                                                <span th:if="${admin.getOrganization() != null} and ${!admin.getOrganization().isEmpty()}"
+                                                      th:text="${admin.getOrganization()}"></span>
+                                                <span th:unless="${admin.getOrganization() != null} and ${!admin.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+
+                                                <span th:if="${admin.getAddress() != null} and ${!admin.getAddress().isEmpty()}"
+                                                      th:text="${admin.getAddress()}"></span>
+                                                <span th:unless="${admin.getAddress() != null} and ${!admin.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+
+                                                <span th:if="${admin.getCity() != null} and ${!admin.getCity().isEmpty()}"
+                                                      th:text="${admin.getCity()}"></span>
+                                                <span th:unless="${admin.getCity() != null} and ${!admin.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Numero telefono: </strong>
+
+                                                <span th:if="${admin.getPhone() != null} and ${!admin.getPhone().isEmpty()}"
+                                                      th:text="${admin.getPhone()}"></span>
+                                                <span th:unless="${admin.getPhone() != null} and ${!admin.getPhone().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+                                                <span th:text="${admin.getEmail()}"></span>
+                                                <span th:if="${admin.getEmail() != null} and ${!admin.getEmail().isEmpty()}"
+                                                      th:text="${admin.getEmail()}"></span>
+                                                <span th:unless="${admin.getEmail() != null} and ${!admin.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${adminStat.index != 0}">
+                                    <h2 class="accordion-header" th:attr="id='adminHeading'+${adminStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="false"
+                                                th:attr="data-bs-target='#adminCollapse'+${adminStat.index}, aria-controls='adminCollapse'+${adminStat.index}">
+                                            Owner #<span th:text="${adminStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='adminCollapse'+${adminStat.index}, aria-labelledby='adminHeading'+${adminStat.index}"
+                                         class="accordion-collapse collapse" data-bs-parent="#accordionContainerAdmins">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      th:text="${owner.getName()}"></span>
+                                                <span th:unless="${owner.getName() != null} and ${!owner.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+
+                                                <span th:if="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      th:text="${owner.getOrganization()}"></span>
+                                                <span th:unless="${owner.getOrganization() != null} and ${!owner.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+
+                                                <span th:if="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      th:text="${owner.getAddress()}"></span>
+                                                <span th:unless="${owner.getAddress() != null} and ${!owner.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+
+                                                <span th:if="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      th:text="${owner.getCity()}"></span>
+                                                <span th:unless="${owner.getCity() != null} and ${!owner.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Numero telefono: </strong>
+
+                                                <span th:if="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      th:text="${owner.getPhone()}"></span>
+                                                <span th:unless="${owner.getPhone() != null} and ${!owner.getPhone().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+
+                                                <span th:if="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      th:text="${owner.getEmail()}"></span>
+                                                <span th:unless="${owner.getEmail() != null} and ${!owner.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- tech list -->
+        <div class="row" style="padding-top: 5%; padding-bottom: 5%">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Techs</h5>
+                        <div class="accordion" id="accordionContainerTechs">
+                            <div class="accordion-item" th:each="tech: ${domainInformation.getContacts().getTech()}">
+                                <div th:if="${techStat.index == 0}">
+                                    <h2 class="accordion-header" th:attr="id='techHeading'+${techStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="true"
+                                                th:attr="data-bs-target='#techCollapse'+${techStat.index}, aria-controls='techCollapse'+${techStat.index}">
+                                            Tech #<span th:text="${techStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='techCollapse'+${techStat.index}, aria-labelledby='techHeading'+${techStat.index}"
+                                         class="accordion-collapse collapse show"
+                                         data-bs-parent="#accordionContainerTechs">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${tech.getName() != null} and ${!tech.getName().isEmpty()}"
+                                                      th:text="${tech.getName()}"></span>
+                                                <span th:unless="${tech.getName() != null} and ${!tech.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+                                                <span th:if="${tech.getOrganization() != null} and ${!tech.getOrganization().isEmpty()}"
+                                                      th:text="${tech.getOrganization()}"></span>
+                                                <span th:unless="${tech.getOrganization() != null} and ${!tech.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+                                                <span th:if="${tech.getAddress() != null} and ${!tech.getAddress().isEmpty()}"
+                                                      th:text="${tech.getAddress()}"></span>
+                                                <span th:unless="${tech.getAddress() != null} and ${!tech.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+                                                <span th:if="${tech.getCity() != null} and ${!tech.getCity().isEmpty()}"
+                                                      th:text="${tech.getCity()}"></span>
+                                                <span th:unless="${tech.getCity() != null} and ${!tech.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+                                                <span th:if="${tech.getEmail() != null} and ${!tech.getEmail().isEmpty()}"
+                                                      th:text="${tech.getEmail()}"></span>
+                                                <span th:unless="${tech.getEmail() != null} and ${!tech.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Numero telefono: </strong>
+                                                <span th:if="${tech.getPhone() != null} and ${!tech.getPhone().isEmpty()}"
+                                                      th:text="${tech.getPhone()}"></span>
+                                                <span th:unless="${tech.getPhone() != null} and ${!tech.getPhone().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${techStat.index != 0}">
+                                    <h2 class="accordion-header" th:attr="id='techHeading'+${techStat.index}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                aria-expanded="false"
+                                                th:attr="data-bs-target='#techCollapse'+${techStat.index}, aria-controls='techCollapse'+${techStat.index}">
+                                            Tech #<span th:text="${techStat.index}+1"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:attr="id='techCollapse'+${techStat.index}, aria-labelledby='techHeading'+${techStat.index}"
+                                         class="accordion-collapse collapse" data-bs-parent="#accordionContainerTechs">
+                                        <div class="accordion-body">
+                                            <p class="card-text"><strong>Nome: </strong>
+
+                                                <span th:if="${tech.getName() != null} and ${!tech.getName().isEmpty()}"
+                                                      th:text="${tech.getName()}"></span>
+                                                <span th:unless="${tech.getName() != null} and ${!tech.getName().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Azienda: </strong>
+                                                <span th:if="${tech.getOrganization() != null} and ${!tech.getOrganization().isEmpty()}"
+                                                      th:text="${tech.getOrganization()}"></span>
+                                                <span th:unless="${tech.getOrganization() != null} and ${!tech.getOrganization().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Indirizzo: </strong>
+                                                <span th:if="${tech.getAddress() != null} and ${!tech.getAddress().isEmpty()}"
+                                                      th:text="${tech.getAddress()}"></span>
+                                                <span th:unless="${tech.getAddress() != null} and ${!tech.getAddress().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Città: </strong>
+                                                <span th:if="${tech.getCity() != null} and ${!tech.getCity().isEmpty()}"
+                                                      th:text="${tech.getCity()}"></span>
+                                                <span th:unless="${tech.getCity() != null} and ${!tech.getCity().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                            <p class="card-text"><strong>Email: </strong>
+                                                <span th:if="${tech.getEmail() != null} and ${!tech.getEmail().isEmpty()}"
+                                                      th:text="${tech.getEmail()}"></span>
+                                                <span th:unless="${tech.getEmail() != null} and ${!tech.getEmail().isEmpty()}"
+                                                      style="color:red;">Valore non reperibile</span>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+        integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<script>
+    const items = document.querySelectorAll('.nav-link');
+    items.forEach(navItem => {
+        navItem.classList.remove('active');
+    });
+    document.querySelector('#navItemWhois').classList.add('active');
+</script>
+</html>
